@@ -1,7 +1,8 @@
 from django.urls import path
 
-from analytics.views import UserActivityView
+from analytics.views import UserActivityView, AnalyticsView
 
 urlpatterns = [
-    path("user-activity/", UserActivityView.as_view()),
+    path("", AnalyticsView.as_view()),
+    path("user-activity/", UserActivityView.as_view())
 ]
