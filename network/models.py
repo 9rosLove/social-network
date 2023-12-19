@@ -16,10 +16,7 @@ class Post(models.Model):
     )
 
     def __str__(self):
-        short_content = self.content[:50]
-        return (
-            short_content + "..." if len(self.content) > 50 else self.content
-        )
+        return self.title
 
 
 class Like(models.Model):
