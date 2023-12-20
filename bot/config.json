@@ -1,0 +1,6 @@
+{
+  "number_of_users": 100,
+  "max_posts_per_user": 1000,
+  "max_likes_per_user": 1000,
+  "semaphore_value": 10
+}
