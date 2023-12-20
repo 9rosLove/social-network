@@ -15,7 +15,7 @@ POST_URL = f"{BASE_URL}network/posts/"
 ANALYTICS_URL = f"{BASE_URL}analytics/"
 
 
-def post_reaction(action:str, post_id: int):
+def post_reaction(action: str, post_id: int):
     return f"{BASE_URL}network/posts/{post_id}/{action}/"
 
 
@@ -33,8 +33,15 @@ class TestUnauthenticated(TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_like_post_authentication_required(self):
-        user = get_user_model().objects.create_user(email="test@test", password="test", first_name="test", last_name="test")
-        Post.objects.create(title="Test Post", content="Test Content", created_by=user)
+        user = get_user_model().objects.create_user(
+            email="test@test",
+            password="test",
+            first_name="test",
+            last_name="test",
+        )
+        Post.objects.create(
+            title="Test Post", content="Test Content", created_by=user
+        )
         url = f"{BASE_URL}network/posts/1/like/"
         response = self.client.post(url)
 
@@ -45,10 +52,15 @@ class TestAuthenticated(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            email="test@test", password="test", first_name="test", last_name="test"
+            email="test@test",
+            password="test",
+            first_name="test",
+            last_name="test",
         )
         self.client.force_authenticate(user=self.user)
-        self.post = Post.objects.create(title="Test Post", content="Test Content", created_by=self.user)
+        self.post = Post.objects.create(
+            title="Test Post", content="Test Content", created_by=self.user
+        )
 
     def test_create_post(self):
         data = {"title": "Test Post", "content": "Test Content"}
@@ -63,7 +75,12 @@ class TestAuthenticated(TestCase):
         response = self.client.get(ANALYTICS_URL)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), [{"date": current_date, "likes_count": 1}, ])
+        self.assertEqual(
+            response.json(),
+            [
+                {"date": current_date, "likes_count": 1},
+            ],
+        )
 
     def test_like_post_single_time(self):
         url = f"{BASE_URL}network/posts/{self.user.posts.first().id}/like/"
@@ -71,7 +88,9 @@ class TestAuthenticated(TestCase):
         print(self.user.is_authenticated)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"detail": "Post liked successfully."})
+        self.assertEqual(
+            response.json(), {"detail": "Post liked successfully."}
+        )
 
     def test_unlike_post(self):
         like_url = post_reaction("like", self.post.id)
@@ -80,14 +99,18 @@ class TestAuthenticated(TestCase):
         response = self.client.post(unlike_url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {"detail": "Post unliked successfully."})
+        self.assertEqual(
+            response.json(), {"detail": "Post unliked successfully."}
+        )
 
     def test_unlike_post_like_not_exist(self):
         url = post_reaction("unlike", self.post.id)
         response = self.client.post(url)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {"error": "You have not liked this post yet."})
+        self.assertEqual(
+            response.json(), {"error": "You have not liked this post yet."}
+        )
 
     def test_like_post_already_liked(self):
         url = post_reaction("like", self.post.id)
@@ -95,17 +118,24 @@ class TestAuthenticated(TestCase):
         response = self.client.post(url)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json(), {"error": "You have already liked this post."})
+        self.assertEqual(
+            response.json(), {"error": "You have already liked this post."}
+        )
 
 
 class TestIsOwnerOrReadOnly(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            email="test@test", password="test", first_name="test", last_name="test"
+            email="test@test",
+            password="test",
+            first_name="test",
+            last_name="test",
         )
         self.client.force_authenticate(user=self.user)
-        self.post = Post.objects.create(title="Test Post", content="Test Content", created_by=self.user)
+        self.post = Post.objects.create(
+            title="Test Post", content="Test Content", created_by=self.user
+        )
 
     def test_update_post(self):
         data = {"title": "Test Post", "content": "Test Content"}
@@ -117,9 +147,14 @@ class TestIsOwnerOrReadOnly(TestCase):
     def test_update_post_not_owner(self):
         data = {"title": "Test Post", "content": "Test Content"}
         user = User.objects.create_user(
-            email="test2@test", password="test", first_name="test", last_name="test"
+            email="test2@test",
+            password="test",
+            first_name="test",
+            last_name="test",
         )
-        post = Post.objects.create(title="Test Post", content="Test Content", created_by=user)
+        post = Post.objects.create(
+            title="Test Post", content="Test Content", created_by=user
+        )
         url = f"{POST_URL}{post.id}/"
         response = self.client.put(url, data=data)
 

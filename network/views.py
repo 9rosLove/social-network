@@ -56,7 +56,9 @@ class PostViewSet(viewsets.ModelViewSet):
 
         Like.objects.create(post=post, created_by=user)
 
-        return Response({"detail": "Post liked successfully."}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": "Post liked successfully."}, status=status.HTTP_200_OK
+        )
 
     @action(
         methods=["POST"],
@@ -71,9 +73,14 @@ class PostViewSet(viewsets.ModelViewSet):
 
         if like_to_delete.exists():
             like_to_delete.delete()
-            return Response({"detail": "Post unliked successfully."}, status.HTTP_200_OK)
+            return Response(
+                {"detail": "Post unliked successfully."}, status.HTTP_200_OK
+            )
 
-        return Response({"error": "You have not liked this post yet."}, status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": "You have not liked this post yet."},
+            status.HTTP_400_BAD_REQUEST,
+        )
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
