@@ -35,12 +35,15 @@ class PostViewSet(viewsets.ModelViewSet):
         return self.queryset
 
     def get_serializer_class(self):
-        if self.action in ["like", "unlike"]:
-            return LikeSerializer
-        if self.action == "retrieve":
-            return PostDetailSerializer
+        queryset = self.get_queryset()
 
-        return super().get_serializer_class()
+        if self.action in ["like", "unlike"]:
+            queryset =  LikeSerializer
+
+        if self.action == "retrieve":
+            queryset = PostDetailSerializer
+
+        return queryset
 
     @action(
         methods=["POST"],
