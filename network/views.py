@@ -28,6 +28,12 @@ class PostViewSet(viewsets.ModelViewSet):
     ordering_fields = ["created_at", "updated_at"]
     search_fields = ["title", "content"]
 
+    def get_queryset(self):
+        if self.action in ("list", "retrieve"):
+            self.queryset = self.queryset.select_related("created_by").prefetch_related("likes")
+
+        return self.queryset
+
     def get_serializer_class(self):
         if self.action in ["like", "unlike"]:
             return LikeSerializer
