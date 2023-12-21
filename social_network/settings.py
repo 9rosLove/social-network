@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
+import socket
 from datetime import timedelta
 from pathlib import Path
 
@@ -27,7 +28,7 @@ SECRET_KEY = os.environ.get(
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DJANGO_DEBUG", True))
+DEBUG = os.environ.get("DJANGO_DEBUG") != "False"
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -35,6 +36,8 @@ ALLOWED_HOSTS = [
     "0.0.0.0",
 ]
 
+hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+INTERNAL_IPS = [ip[:-1] + '1' for ip in ips] + ['127.0.0.1']
 
 # Application definition
 
@@ -47,12 +50,14 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "drf_spectacular",
     "rest_framework",
+    "debug_toolbar",
     "analytics",
     "network",
     "user",
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
