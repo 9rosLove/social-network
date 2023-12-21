@@ -47,6 +47,15 @@
     ```bash
     python manage.py runserver
     ```
+## 🐋 Run with docker
+1. Make sure Docker is installed.
+2. Build the Docker containers:
+    ```bash
+    docker-compose build
+    ```
+3. Run the Docker containers:
+    ```bash
+    docker-compose up
 
 # 🤖 Automated Bot
 The automated bot script (bot.py) performs the following activities:
