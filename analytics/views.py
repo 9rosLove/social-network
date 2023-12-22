@@ -50,11 +50,6 @@ class LikeAnalyticsView(generics.ListAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        except TypeError:
-            return Response(
-                {"error": "Empty date"}, status=status.HTTP_400_BAD_REQUEST
-            )
-
         queryset = (
             (Like.objects.filter(created_at__date__range=[date_from, date_to]))
             .values(date=F("created_at__date"))
