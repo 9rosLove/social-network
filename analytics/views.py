@@ -9,7 +9,7 @@ from network.models import Like
 from django.db.models import Count, F
 from rest_framework import status
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 
 
@@ -30,6 +30,7 @@ class UserActivityView(generics.RetrieveAPIView):
 class LikeAnalyticsView(generics.ListAPIView):
     pagination_class = AnalyticsPagination
     serializer_class = LikeAnalyticsSerializer
+    permission_classes = [IsAdminUser]
 
     def get_queryset(self, *args, **kwargs):
         date_from = self.request.query_params.get(
